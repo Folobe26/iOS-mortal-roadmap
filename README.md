@@ -66,7 +66,6 @@ Feel free to add PR or issues.
 </ul>
 <li>CoreGraphics/CoreAnimation/Charts
 <li>IGListKit
-<li>ReactCocoa/RXSwift
 <li>SDWebImage
 <li>AFNetworking
 <li>YYText
@@ -244,9 +243,19 @@ Feel free to add PR or issues.
 </li>
 </ul>
 </td>
-<td>
+<td>Functional programming
+<ul>
+<li>ReactCocoa/RXSwift
+</li>
+</ul>
+<br>
+<br>
+<br>
+<br>
+<br>
 </td>
 </tr>
+
 </table>
 
 
@@ -461,7 +470,7 @@ If you checked the last but the most important one, you will find `bootstrap_loo
 Then is runloop.
 Runloop is something highly investigated by now. If you are still strange with it, check this [official doc](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) and [source code of __CFRunLoopRun](https://opensource.apple.com/source/CF/CF-1153.18/CFRunLoop.c.auto.html)
 
-- UIKit & IGListKit
+- UIKit & IGListKit && YYText
 
 Actually, most iOS developer call themselves UIKit caller. Just kidding.. But it does reflect the relationship between UIKit and development of iOS. UIKit builds every app's entire world. Each app has a UIWindow as the key window. Then we have to set up a root UIViewController of this key window. Then commonly we put a UITableView or UICollectionView in the root viewcontroler. Each row of the tableview or collectionview has some UIImageView and UIButton and UILabel and UITextView. Some of imageviews are set up with UIGestureRecognizers, then they can interact with users to respond to specific gestures. A simple but complete app is built done.
 
@@ -491,3 +500,8 @@ But IGListKit doesn't fix the problem that we can call several times in one loop
 The interfaces of IGListKit still need to improve.
 
 Then is navigation and presenting. Transition between different pages are common need in mobile app, Apple designed UINavigaitonController to horizentally transfer from one to another, and presenting to verically transfer form one to another. The difference is that, navigation to next must cover current page. But presenting one doesn't require that. So we have modal presenting. I don't know how Android implements in transition between pages, but for me UINavigationController and the presenting behaviro are both not easy to use especially when you want to customize. 
+
+See this framework to learn more: [CoreNavigation](https://github.com/aronbalog/CoreNavigation/blob/master/Documentation/CONFIGURATION.md#animating)
+
+For rendering text in iOS, I strongly recommend YYText to discover the principles behind UILabel with CoreText API. `YYLabel` provides strong feature and is easy to debug with transparent code. In one word, either `YYLabel` or `UILabel` are just wrapper for CoreText. CoreText doesn't provide the canvas, we need a UIView to provide the concrete canvas, so thats YYLabel or UILabel. With exploring of the implementation of YYLabel, you will learn Font, glyph, CTRun, paragraph, baseline and other concepts. As computers now still transfer infomation by rendering words, don't miss these exciting part!
+
