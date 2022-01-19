@@ -430,6 +430,7 @@ Python and shell are used to accelerate some specific problems like posting loca
 - CoreFoundation
 
 CoreFoundation and Foundation perform as the foundation of the entrie iOS system. CF performs following roles:
+
     - Data structures provider. It provides like CFArray, CFDictionary, CFTree if you are programming in C.
     - Practical utils provider. It provides CFLocale, CFXMLParser, CFDate...
     - IPC Wrapper. Use CFMessagePort or CFMachPort to communicate with other processes.
@@ -441,6 +442,7 @@ Check CoreFoundation's headers if you wish.
 CoreFoundation is wholely open-sourced by apple. See it [here](https://opensource.apple.com/source/CF/)
 
 There are 2 classes I want to explain here:
+
     - CFMachPort
     - CFRunloop
 which are considered the most special classes provided by XNU.
@@ -464,6 +466,7 @@ Runloop is something highly investigated by now. If you are still strange with i
 Actually, most iOS developer call themselves UIKit caller. Just kidding.. But it does reflect the relationship between UIKit and development of iOS. UIKit builds every app's entire world. Each app has a UIWindow as the key window. Then we have to set up a root UIViewController of this key window. Then commonly we put a UITableView or UICollectionView in the root viewcontroler. Each row of the tableview or collectionview has some UIImageView and UIButton and UILabel and UITextView. Some of imageviews are set up with UIGestureRecognizers, then they can interact with users to respond to specific gestures. A simple but complete app is built done.
 
 I don't want to discuss each classes in UIKit because there are too many. I only talk about following classes:
+
     - UICollectionView and UITableView
     - UINavigationController and UIViewController's presenting method
     - UILabel and UITextView
