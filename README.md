@@ -13,7 +13,7 @@ Feel free to add PR or issues.
 <li>Google search
 <li>Git/Github
 <li>Charles/wireshark
-<li>Iterm
+<li>Iterm & zsh
 <li>VSCode
 <li>Xcode
 <li>Vim
@@ -248,3 +248,150 @@ Feel free to add PR or issues.
 </td>
 </tr>
 </table>
+
+
+## Basic Tools
+
+### English
+
+As this repo is written in English, English part is ignored.
+
+### Google search
+
+This section recommends several useful google search tips with little effort to learn.
+
+Check them out in:
+- [A simplified cheatsheet](https://www.cfcs.org/sites/default/files/Google%20search%20tips.pdf)
+- [A full cheatsheet](https://static.semrush.com/blog/uploads/files/39/12/39121580a18160d3587274faed6323e2.pdf)
+
+I strongly recommend using `""`, `-`, `*`, `~`, `site:`, `filetype:` etc.
+
+### Git/Github
+
+Git will be your best friend in your whole career. pls learn it staidly in [this official site](https://git-scm.com/book/en/v2).
+
+Be sure you can explain following commands:
+- git add
+    - git add -i
+    - git add -p
+    - diff between git add -u & git add -A & git add .
+- pull
+    - git pull -r
+    - git pull -squash
+    - diff between git pull and git pull --commit
+    - git pull --edit
+    - git pull --autostash
+- push
+    - git push -f
+    - git push --prune
+- rebase
+    - git rebase --ignore-whitespace
+    - git rebase --signoff
+- worktree
+    - git worktree add / remove
+    - git worktree list
+    - git worktree lock
+    - git worktree move
+- cherry-pick
+- revert
+- gc
+- stash
+    - git stash pop
+    - git stash save
+- prune
+- blame
+- restore
+- diff
+- cogfigurations in .git/config
+
+### Charles / Wireshark
+
+Charles satisfy most need in daily development, but if your app uses a stronger network framework than http1.1 or http2 like QUIC, you should switch to wireshark.
+
+
+### Iterm & Zsh
+
+Best relacement of terminal and bash for now.
+
+### VScode
+
+VScode now doesn't support for ObjC or Swift well, especially bad support for ObjC. But LinkedIn has been transfered to swift for a long time, I found there are more and more plugins supporting for writing swift code in vscode and even there is an official swift plugin in progress. And the most important reason for me to use vscode rather than xcode is that xcode's indexing system is getting slower and slower. I can't tolerate such a stupid IDE and switch to embrace open-source tools.
+
+
+There are too many vscode's tutorials, I only list [an iOS related customization of vscode by nshipster](https://nshipster.com/vscode/).
+
+Actually, as most of large iOS project contains many ruby, groovy, python scripts, using vscode and armed with useful plugins are basic requirement of an efficient iOS developer now.
+
+
+### Xcode
+
+Wait for someone or myself to introduce THIS F S.
+
+
+### Vim
+
+So many people said Vim is useless nowadays but I'm still used to vim when `git commit -m`. Being familiar with common vim commands will help you in some corner cases you don't expect at all.
+
+[Vim Cheat sheet](https://vim.rtorr.com/)
+
+### Netease Music
+
+Choose a good music app, if any chance, don't choose netease music.
+
+### figma
+
+Figma is a good tool used by so many companies like bytedance, linkedin... Being familiar with this tool will improve the efficiency you get info from some design.
+
+And figma is an absolutely useful tool when you are demostrating your arch of some module in your project. Put some illustrations in RFC will also help reviewers understand what you are doing like the workflow, the layer arch or something else.
+
+## Languages
+
+- ObjC
+    - objc message forwading, selectors, method swizzle
+    - objc class layout / ivars (fragile ivar, ivar encoding) / protocols / isa pointer / method list (class method and instance method)
+    - +load, +initialize, Category
+    - associated property
+    - stack block, escaping block, variable captured by block
+    - KVC and KVO
+    - tagged pointer
+    - ARC mechanism
+        - MRC and ARC
+        - autoreleasing
+        - weak and strong
+        - copy
+- Swift
+    - frozen enum
+    - diff between NSArray and Array
+    - Any, AnyObject
+    - ?, !
+    - swift class layout
+    - struct
+    - protocol
+    - extension
+    - concurrency, async, await, actor model
+    - open, public, private, internal, fileprivate
+    - codeable
+    - property wrapper
+    - string solution
+    - POWERFUL generics
+- C/C++
+    - Basic C programming
+    - C++ 17
+        - left and right value
+        - smart pointer
+        - template programming
+        - namespace
+- Ruby
+- Java/groovy
+- Python/Shell
+
+ObjC and Swift are most commonly used in daily development, as no language is simple, we should master in these 2 tools to cover wired issue you may meet in daily development. The language detail is also the foundation of dealing with complex problems like improving building time, improving debugging efficience, etc...
+
+C/C++ are commonly regarded as having low overhead than swift and objc. And they all have good compatibility in different platform, widely used to create cross-platform frameworks like video, audio, networking, etc... Master in C++ will bring you capbilities to read complex computer science solutions like rendering or editing videos or playing audios.
+
+Ruby is used by cocoapods which is the famous package manager nowadays. `Podfile` is something every iOS developer need to know in every large iOS project. Learning ruby and writing podfile or cocoapods hooks will help you understand iOS development easier.
+
+Java and groovy are used by gradle and jenkins.
+
+Python and shell are used to accelerate some specific problems like posting local crash logs.
+
