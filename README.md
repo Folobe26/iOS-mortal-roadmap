@@ -376,11 +376,36 @@ And figma is an absolutely useful tool when you are demostrating your arch of so
     - POWERFUL generics
 - C/C++
     - Basic C programming
-    - C++ 17
-        - left and right value
-        - smart pointer
-        - template programming
-        - namespace
+    - C++
+        - Object model
+            - virtual methods
+            - virtual base classes
+            - EBO (empty base optimization)
+        - RAII
+            - exception-safe types
+        - Value categories
+            - lvalue & move semantic
+            - rvalue
+        - Smart pointer
+            - `std::shared_ptr` & `std::make_shared`
+            - `std::unique_ptr`
+        - Template programming
+            - variadic template
+            - template template
+            - CRTP
+            - type erasing
+                - `std::function` (application)
+        - Common optimizations
+            - SBO (small buffer object)
+            - RVO & NRVO
+    - STL
+        - container types
+        - traits
+        - algorithms
+    - C++20
+        - modules
+        - coroutine
+        - concept
 - Ruby
 - Java/groovy
 - Python/Shell
