@@ -50,7 +50,7 @@ Feel free to add PR or issues.
 <li>Design pattern (MVC / MVVM…)
 </li>
 </ul>
-<li>UI related frameworks 
+<li>UI related
 <ul>
 <li>CoreFoundation  
 <ul>
@@ -79,7 +79,7 @@ Feel free to add PR or issues.
 </td>
 <td>
 <ul>
-<li>Non-UI related frameworks 
+<li>Non-UI related
 <ul>
 <li>GCD
 <li>WCDB/FMDB(SQLite)/MMKV
@@ -420,3 +420,71 @@ Java and groovy are used by gradle and jenkins.
 
 Python and shell are used to accelerate some specific problems like posting local crash logs.
 
+
+## Business related
+
+### Basic tools
+
+### UI related
+
+- CoreFoundation
+
+CoreFoundation and Foundation perform as the foundation of the entrie iOS system. CF performs following roles:
+    - Data structures provider. It provides like CFArray, CFDictionary, CFTree if you are programming in C.
+    - Practical utils provider. It provides CFLocale, CFXMLParser, CFDate...
+    - IPC Wrapper. Use CFMessagePort or CFMachPort to communicate with other processes.
+    - Low-level Network provider. You can use CFSocket to do socket level networking requests.
+    - Runloop provider. CFRunloop is the key role in any applications in XNU.
+
+Check CoreFoundation's headers if you wish.
+
+CoreFoundation is wholely open-sourced by apple. See it [here](https://opensource.apple.com/source/CF/)
+
+There are 2 classes I want to explain here:
+    - CFMachPort
+    - CFRunloop
+which are considered the most special classes provided by XNU.
+
+CFMachPort is used to communicate with other process. One process sends a message to another process. Message is sended and received by 2 mach ports, one in the sender process, another in receiver process. Almost every system framework relies on IPC to work with others. Even our app relies on IPC to achieve goals like rendering something, handling user interaction, handling networking notifications and so on. But almost all these IPC behaviors are covered by system framework. You can see nothing in the opaque UIKit about IPC or NSURLSession in Foundation.
+
+Check more details in these links:
+[hurdextras](http://hurdextras.nongnu.org/ipc_guide/)
+[A demo of register disk mount/unmount notification from system by mach port](https://github.com/aosm/DiskArbitration/blob/master/diskarbitrationd/DAMain.c)
+[Some investigation of system notification in Chinese](https://juejin.cn/post/6844903837690494989)
+[Communication between our server and client](https://github.com/nevali/opencflite/tree/master/examples/CFMessagePort)
+[Implmentation of registering local and remote port when communication](https://opensource.apple.com/source/CF/CF-1153.18/CFMessagePort.c.auto.html)
+
+If you checked the last but the most important one, you will find `bootstrap_look_up2` and `bootstrap_register2` and `task_get_bootstrap_port` which will bring you to the concrete XNU's implementation which differs a lot from unix.
+
+Then is runloop.
+Runloop is something highly investigated by now. If you are still strange with it, check this [official doc](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) and [source code of __CFRunLoopRun](https://opensource.apple.com/source/CF/CF-1153.18/CFRunLoop.c.auto.html)
+
+- UIKit & IGListKit
+
+Actually, most iOS developer call themselves UIKit caller. Just kidding.. But it does reflect the relationship between UIKit and development of iOS. UIKit builds every app's entire world. Each app has a UIWindow as the key window. Then we have to set up a root UIViewController of this key window. Then commonly we put a UITableView or UICollectionView in the root viewcontroler. Each row of the tableview or collectionview has some UIImageView and UIButton and UILabel and UITextView. Some of imageviews are set up with UIGestureRecognizers, then they can interact with users to respond to specific gestures. A simple but complete app is built done.
+
+I don't want to discuss each classes in UIKit because there are too many. I only talk about following classes:
+    - UICollectionView and UITableView
+    - UINavigationController and UIViewController's presenting method
+    - UILabel and UITextView
+
+Use UICollectionView for **Horizental & Vertical scrolling**. Use UITableView for **Vertical scrolling**. So if you want to implement an horizental scrolling UI element, you can only use UICollectionView.
+No matter UICollectionView and UITableView, under UIKit's MVC arch, we provide a datasource and a delegate for these 2 UI classes. Data source for data spec. Delegate for scrolling, sizing, configuring...
+
+You can see delegate method is completely a ball of mud. IGListKit comes up to help you out.
+
+The key concept of IGListKit is to seperate sections into several sectionproviders to release the pressure of controller. In raw UIKit, Controller takes all the responsibilities to run UICollectionView. Now with IGListKit, we have a manager called Adapter to manage all the resources UICollectionView needed. Resources are seperated into several parts, which is exactly sectionproviders. So our controller is clean now.
+
+In addition to releasing pressure of controller, IGListKit also provides more coherence in one section. Most logics are put into ONE sectionProvider, the logics get bundled more tightly.
+
+But in contrast to IGListKit's official guidance, I don't think section providers are easily to reuse. Actually, NO CONTROLLER CAN BE REUSED. The only thing we can reuse is the relationsip between view and model. Even the configuration can not be reused.
+
+LinkedIn recently worked out a new UI framework which focuses on the relationship between UI and model, give up thinking of reuse of section controller or provider, the only thing designed to be reused is the relationship between model and view. And of course, the configuration can be reused optionally.
+
+Another advantage of IGListKit is the high performance it provides with diff algorithm. No more reloadData. Only perform change from one snapshot to another.
+
+But IGListKit doesn't fix the problem that we can call several times in one loop. But LinkedIn's one fixes this issue by a delayed update in one loop.
+
+The interfaces of IGListKit still need to improve.
+
+Then is navigation and presenting. Transition between different pages are common need in mobile app, Apple designed UINavigaitonController to horizentally transfer from one to another, and presenting to verically transfer form one to another. The difference is that, navigation to next must cover current page. But presenting one doesn't require that. So we have modal presenting. I don't know how Android implements in transition between pages, but for me UINavigationController and the presenting behaviro are both not easy to use especially when you want to customize. 
