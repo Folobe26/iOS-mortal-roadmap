@@ -384,8 +384,8 @@ And figma is an absolutely useful tool when you are demostrating your arch of so
         - RAII
             - exception-safe types
         - Value categories
-            - lvalue & move semantic
-            - rvalue
+            - lvalue
+            - rvalue & move semantic
         - Smart pointer
             - `std::shared_ptr` & `std::make_shared`
             - `std::unique_ptr`
