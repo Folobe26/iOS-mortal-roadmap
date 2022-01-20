@@ -18,7 +18,7 @@ Feel free to add PR or issues.
 <li>Xcode
 <li>Vim
 <li>Netease Music
-<li>figma
+<li>Figma
 </li>
 </ul>
 </td>
@@ -347,11 +347,11 @@ So many people said Vim is useless nowadays but I'm still used to vim when `git 
 
 Choose a good music app, if any chance, don't choose netease music.
 
-### figma
+### Figma
 
 Figma is a good tool used by so many companies like bytedance, linkedin... Being familiar with this tool will improve the efficiency you get info from some design.
 
-And figma is an absolutely useful tool when you are demostrating your arch of some module in your project. Put some illustrations in RFC will also help reviewers understand what you are doing like the workflow, the layer arch or something else.
+And Figma is an absolutely useful tool when you are demostrating your arch of some module in your project. Put some illustrations in RFC will also help reviewers understand what you are doing like the workflow, the layer arch or something else.
 
 ## Languages
 
