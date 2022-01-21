@@ -1,6 +1,6 @@
 # iOS-Mortal-Roadmap
 
-This repo provides common roadmap for characterless iOS developers to a higher level.
+This repo provides common roadmap for characterless iOS developers climbing to a higher level.
 
 Feel free to add PR or issues.
 
@@ -83,7 +83,7 @@ Feel free to add PR or issues.
 <li>GCD
 <li>WCDB/FMDB(SQLite)/MMKV
 <li>CoreData
-<li>NSFileManager
+<li>NSFileManager/NSStream
 <li>JSONModel/Swift_Codable/YYJSON
 <li>Protobuf
 <li>Remodel
@@ -436,7 +436,7 @@ Python and shell are used to accelerate some specific problems like posting loca
 
 ### UI related
 
-- CoreFoundation
+- CoreFoundation [senior]
 
 CoreFoundation and Foundation perform as the foundation of the entrie iOS system. CF performs following roles:
 
@@ -470,7 +470,7 @@ If you checked the last but the most important one, you will find `bootstrap_loo
 Then is runloop.
 Runloop is something highly investigated by now. If you are still strange with it, check this [official doc](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) and [source code of __CFRunLoopRun](https://opensource.apple.com/source/CF/CF-1153.18/CFRunLoop.c.auto.html)
 
-- UIKit & IGListKit && YYText
+- UIKit && IGListKit && YYText && SDWebImageView && Lottie && CoreAnimation/Graphcis [junior]
 
 Actually, most iOS developer call themselves UIKit caller. Just kidding.. But it does reflect the relationship between UIKit and development of iOS. UIKit builds every app's entire world. Each app has a UIWindow as the key window. Then we have to set up a root UIViewController of this key window. Then commonly we put a UITableView or UICollectionView in the root viewcontroler. Each row of the tableview or collectionview has some UIImageView and UIButton and UILabel and UITextView. Some of imageviews are set up with UIGestureRecognizers, then they can interact with users to respond to specific gestures. A simple but complete app is built done.
 
@@ -481,6 +481,9 @@ I don't want to discuss each classes in UIKit because there are too many. I only
     - UILabel and UITextView
 
 Use UICollectionView for **Horizental & Vertical scrolling**. Use UITableView for **Vertical scrolling**. So if you want to implement an horizental scrolling UI element, you can only use UICollectionView.
+
+The key improvement in efficiency in TableView or CollectionView is to reuse a UITableView/UICollectionViewCell without creating and destroying it. But it also brings us some **"problems"** in daily development, like forgetting to reset some UI related properties in `prepareForReuse`.
+
 No matter UICollectionView and UITableView, under UIKit's MVC arch, we provide a datasource and a delegate for these 2 UI classes. Data source for data spec. Delegate for scrolling, sizing, configuring...
 
 You can see delegate method is completely a ball of mud. IGListKit comes up to help you out.
@@ -499,9 +502,46 @@ But IGListKit doesn't fix the problem that we can call several times in one loop
 
 The interfaces of IGListKit still need to improve.
 
+In addition, UICollectionView and UITableView's shared parent class, UIScrollView, also provides abilities to zoom content allowing your application to support the standard pinch gestures to zoom in and out. You **should check this guidance before the actual feature implmentation**.
+
 Then is navigation and presenting. Transition between different pages are common need in mobile app, Apple designed UINavigaitonController to horizentally transfer from one to another, and presenting to verically transfer form one to another. The difference is that, navigation to next must cover current page. But presenting one doesn't require that. So we have modal presenting. I don't know how Android implements in transition between pages, but for me UINavigationController and the presenting behaviro are both not easy to use especially when you want to customize. 
 
 See this framework to learn more: [CoreNavigation](https://github.com/aronbalog/CoreNavigation/blob/master/Documentation/CONFIGURATION.md#animating)
 
 For rendering text in iOS, I strongly recommend YYText to discover the principles behind UILabel with CoreText API. `YYLabel` provides strong feature and is easy to debug with transparent code. In one word, either `YYLabel` or `UILabel` are just wrapper for CoreText. CoreText doesn't provide the canvas, we need a UIView to provide the concrete canvas, so thats YYLabel or UILabel. With exploring of the implementation of YYLabel, you will learn Font, glyph, CTRun, paragraph, baseline and other concepts. As computers now still transfer infomation by rendering words, don't miss these exciting part!
+
+Then let's talk about rendering images. Basically, UIImageView is the only one responsible for rendering images in iOS world. But it doesn't support SVG, WebP at all. You need a third party decoder to process such types data like SDWebImage/Webp. 
+
+[SVG](https://developer.mozilla.org/en-US/docs/Web/SVG) or PDF are designed to provide an interactive zoom-in/out experience with high-fidelity based on vector graphics. SVG is based on XML which means a big SVG still can be compressed smaller in binary format. And you can search, edit the content with raw text editor or drawing software. I won't describe the advantages and disadvantages of vector based format compared to bitmap based format, try to search and learn by yourself.
+
+In addition, on a whim of investigating the implementation of SDWebImageSVGDecoder, I found SDWebImage tries a shortcut instead of implementing a concrete decoder on iOS platform. It uses CoreSVG framework which is still in beta and protected by Apple. It reverse the CoreSVG framework, get the interface of the key functions, use `dlsym` open these functions runtime. For a traditional way to implement SVG decoder and renderer in iOS platorm, we can use libXML to parse the SVG file's data, use CoreGraphics to render all the bezier path defined by the data. [SwiftSVG](https://github.com/mchoe/SwiftSVG) provides a traditional way to achieve.
+
+For PDF files, use UIGraphicsPDFRender to render a PDF file.
+
+Sometime we need to render some AE-based visual effect, like a piece of animation. We can complete this taks by UIKit. Lottie and PAG say hello. Generally, Our designer works on AE, Lottie and PAG are responsible for render designed work from AE to iOS platform. Lottie is developed by Airbnb, stable enough, but also with many problems. PAG is rencently released by Tencent, freshman, but decalres sovling problems in Lottie, like high memory pressure, lack support for new AE features, etc. 
+
+Lottie is based on CoreAnimation. It creates many CALayers to immitate the effect in AE's definition. Complex effect consumes much cpu and memory, especially for scenes with more than one complex Lottie animations. You need to take care of each animation's resource management, cut the cpu consumption peak due to decompress so many images used by animations. In addition, lottie in objc was stopped to maintain for many years, many features are not supported in objc version but in swift version like resource provider which is extremely useful when rendering complex aniamtions or doing some customizations on animations.
+
+As we refered CoreAnimation, let's talk about rendering in iOS. Rendering can be divided into 2 parts in iOS platform, CPU based and GPU based.
+Strictly speaking, CoreAnimation has little relationship with manipulating on GPU. Because CoreAnimation performs more like an broker between App and system concrete rendering service. App -> UIKit -> CoreAnimation -> system render service (backboard or springboard). The actual rednering behavior is done in system render process. The render process manipulates on GPU. But CoreGraphics works as a slave, when we call it to render something, it does actually render in App's process, like creating a buffer, and filling it with colors.
+
+CoreAnimation provides CALayer which represent a minimum unit to render. Try regarding a layer as a part of screen. Layers can overlap. CoreAnimation also provides so many subclasses inherit from CALayer to achieve different visual effect or provide back support for UIKit's related classes. Frequently used classes are:
+    - CALayer
+    - CATextLayer: rendering text without UILabel. UILabel uses _UILabelLayer inherites from CALayer directly.
+    - CAGradientLayer: designed to achieve gradient color effect.
+    - CATiledLayer: commonly used in optimizing big picture rendering like `微博长图`.
+
+
+
+- AFNetworking 
+
+AFNetworking saves our time to write template codes like requesting an image for a UIImageView, UIButton, or binding UIActivityIndicatorView,   UIProgressView and UIRefreshControl with some specific network request. It also provides abilities to:
+    - customize your strategy about server trust certificates. 
+    - reuqest:
+        - simply map random string to be a legal query param (`AFPercentEscapedStringFromString` used by AFQueryStringPair)
+        - automatically set `User-Agent` and `Accept-Language`
+        - simply create multipart request with automatically set `Content-Type` and `Content-Length`
+
+As for response, IMO AFNetworking doesn't work as well as we wish. First weakness is lacking of response modeling, AFNetworking just returns a raw NSDictionary if you are using JSONSerializer. AF does not provide a default modeling way to make the most convinience for users. Besides, AF doesn't support protobuf originally, but pb is almostly used by every application nowadays.
+
 
