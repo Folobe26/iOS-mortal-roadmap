@@ -437,15 +437,15 @@ Python and shell are used to accelerate some specific problems like posting loca
 
 ### UI related
 
-- UIKit && IGListKit && YYText && SDWebImageView && Lottie && CoreAnimation/Graphcis [junior]
+#### UIKit && IGListKit && YYText && SDWebImageView && Lottie && CoreAnimation/Graphcis [junior]
 
 Actually, most iOS developer call themselves UIKit caller. Just kidding.. But it does reflect the relationship between UIKit and development of iOS. UIKit builds every app's entire world. Each app has a UIWindow as the key window. Then we have to set up a root UIViewController of this key window. Then commonly we put a UITableView or UICollectionView in the root viewcontroler. Each row of the tableview or collectionview has some UIImageView and UIButton and UILabel and UITextView. Some of imageviews are set up with UIGestureRecognizers, then they can interact with users to respond to specific gestures. A simple but complete app is built done.
 
 I don't want to discuss each classes in UIKit because there are too many. I only talk about following classes:
 
-    - UICollectionView and UITableView
-    - UINavigationController and UIViewController's presenting method
-    - UILabel and UITextView
+- UICollectionView and UITableView
+- UINavigationController and UIViewController's presenting method
+- UILabel and UITextView
 
 Use UICollectionView for **Horizental & Vertical scrolling**. Use UITableView for **Vertical scrolling**. So if you want to implement an horizental scrolling UI element, you can only use UICollectionView.
 
@@ -493,20 +493,20 @@ As we refered CoreAnimation, let's talk about rendering in iOS. Rendering can be
 Strictly speaking, CoreAnimation has little relationship with manipulating on GPU. Because CoreAnimation performs more like an broker between App and system concrete rendering service. App -> UIKit -> CoreAnimation -> system render service (backboard or springboard). The actual rednering behavior is done in system render process. The render process manipulates on GPU. But CoreGraphics works as a slave, when we call it to render something, it does actually render in App's process, like creating a buffer, and filling it with colors.
 
 CoreAnimation provides CALayer which represent a minimum unit to render. Try regarding a layer as a part of screen. Layers can overlap. CoreAnimation also provides so many subclasses inherit from CALayer to achieve different visual effect or provide back support for UIKit's related classes. Frequently used classes are:
-    - CALayer
-    - CATextLayer: rendering text without UILabel. UILabel uses _UILabelLayer inherites from CALayer directly.
-    - CAGradientLayer: designed to achieve gradient color effect.
-    - CATiledLayer: commonly used in optimizing big picture rendering like `微博长图`.
+- CALayer
+- CATextLayer: rendering text without UILabel. UILabel uses _UILabelLayer inherites from CALayer directly.
+- CAGradientLayer: designed to achieve gradient color effect.
+- CATiledLayer: commonly used in optimizing big picture rendering like `微博长图`.
 
-- CoreFoundation [senior]
+#### CoreFoundation [senior]
 
 CoreFoundation and Foundation perform as the foundation of the entrie iOS system. CF performs following roles:
 
-    - Data structures provider. It provides like CFArray, CFDictionary, CFTree if you are programming in C.
-    - Practical utils provider. It provides CFLocale, CFXMLParser, CFDate...
-    - IPC Wrapper. Use CFMessagePort or CFMachPort to communicate with other processes.
-    - Low-level Network provider. You can use CFSocket to do socket level networking requests.
-    - Runloop provider. CFRunloop is the key role in any applications in XNU.
+- Data structures provider. It provides like CFArray, CFDictionary, CFTree if you are programming in C.
+- Practical utils provider. It provides CFLocale, CFXMLParser, CFDate...
+- IPC Wrapper. Use CFMessagePort or CFMachPort to communicate with other processes.
+- Low-level Network provider. You can use CFSocket to do socket level networking requests.
+- Runloop provider. CFRunloop is the key role in any applications in XNU.
 
 Check CoreFoundation's headers if you wish.
 
@@ -514,8 +514,8 @@ CoreFoundation is wholely open-sourced by apple. See it [here](https://opensourc
 
 There are 2 classes I want to explain here:
 
-    - CFMachPort
-    - CFRunloop
+- CFMachPort
+- CFRunloop
 which are considered the most special classes provided by XNU.
 
 CFMachPort is used to communicate with other process. One process sends a message to another process. Message is sended and received by 2 mach ports, one in the sender process, another in receiver process. Almost every system framework relies on IPC to work with others. Even our app relies on IPC to achieve goals like rendering something, handling user interaction, handling networking notifications and so on. But almost all these IPC behaviors are covered by system framework. You can see nothing in the opaque UIKit about IPC or NSURLSession in Foundation.
@@ -561,7 +561,7 @@ Find details in [Dispatch Source](https://developer.apple.com/library/archive/do
 
 #### **Networking**
 
-##### AFNetworking
+AFNetworking
 
 AFNetworking saves our time to write template codes like requesting an image for a UIImageView, UIButton, or binding UIActivityIndicatorView,   UIProgressView and UIRefreshControl with some specific network request. It also provides abilities to:
 - customize your strategy about server trust certificates.
@@ -574,35 +574,42 @@ As for response, IMO AFNetworking doesn't work as well as we wish. First weaknes
 
 #### **Mobile Data Cache**
 
-##### WCDB/FMDB(SQLite)/MMKV
+WCDB/FMDB(SQLite)/MMKV
 
-##### CoreData
+CoreData
 
-##### Keychain
+Keychain
 
 #### **File Management**
-##### NSFileManager/NSStream
+
+NSFileManager/NSStream
 
 #### **Serialization**
-##### JSONModel/Swift Codable/YYJSON
 
-##### Protobuf
+JSONModel/Swift Codable/YYJSON
+
+Protobuf
 
 #### **Model**
-##### Remodel
+
+Remodel
 
 #### **Model Consistency**
-##### ConsistencyManager
+
+ConsistencyManager
 
 #### **Regex**
-##### Regex
+
+Regex
 
 
 #### **Router**
-##### Deeplink/Router (no specific framework)
+
+Deeplink/Router (no specific framework)
 
 #### **Functional Programming**
-##### RxSwift/RAC
+
+RxSwift/RAC
 
 #### **Logging**
 ...
