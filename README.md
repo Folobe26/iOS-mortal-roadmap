@@ -52,11 +52,6 @@ Feel free to add PR or issues.
 </ul>
 <li>UI related
 <ul>
-<li>CoreFoundation  
-<ul>
-<li>Runloop
-</li>  
-</ul>
 <li>UIKit
 <ul>
 <li>UICV/UITV
@@ -64,14 +59,19 @@ Feel free to add PR or issues.
 <li>Text Related
 </li>  
 </ul>
-<li>CoreGraphics/CoreAnimation/Charts
 <li>IGListKit
 <li>SDWebImage
-<li>AFNetworking
 <li>YYText
-<li>IJKPlayer/VideoLab
 <li>Lottie/PAG
-</li> 
+<li>CoreAnimation/Graphics
+<li>CoreFoundation
+<ul>
+<li>IPC
+<li>Runloop
+</li>
+</ul>
+<li>IJKPlayer/VideoLab
+</li>
 </ul>
 </li> 
 </ul>
@@ -80,7 +80,8 @@ Feel free to add PR or issues.
 <ul>
 <li>Non-UI related
 <ul>
-<li>GCD
+<li>GCD/NSOperationQueue
+<li>AFNetworking
 <li>WCDB/FMDB(SQLite)/MMKV
 <li>CoreData
 <li>NSFileManager/NSStream
@@ -436,40 +437,6 @@ Python and shell are used to accelerate some specific problems like posting loca
 
 ### UI related
 
-- CoreFoundation [senior]
-
-CoreFoundation and Foundation perform as the foundation of the entrie iOS system. CF performs following roles:
-
-    - Data structures provider. It provides like CFArray, CFDictionary, CFTree if you are programming in C.
-    - Practical utils provider. It provides CFLocale, CFXMLParser, CFDate...
-    - IPC Wrapper. Use CFMessagePort or CFMachPort to communicate with other processes.
-    - Low-level Network provider. You can use CFSocket to do socket level networking requests.
-    - Runloop provider. CFRunloop is the key role in any applications in XNU.
-
-Check CoreFoundation's headers if you wish.
-
-CoreFoundation is wholely open-sourced by apple. See it [here](https://opensource.apple.com/source/CF/)
-
-There are 2 classes I want to explain here:
-
-    - CFMachPort
-    - CFRunloop
-which are considered the most special classes provided by XNU.
-
-CFMachPort is used to communicate with other process. One process sends a message to another process. Message is sended and received by 2 mach ports, one in the sender process, another in receiver process. Almost every system framework relies on IPC to work with others. Even our app relies on IPC to achieve goals like rendering something, handling user interaction, handling networking notifications and so on. But almost all these IPC behaviors are covered by system framework. You can see nothing in the opaque UIKit about IPC or NSURLSession in Foundation.
-
-Check more details in these links:
-[hurdextras](http://hurdextras.nongnu.org/ipc_guide/)
-[A demo of register disk mount/unmount notification from system by mach port](https://github.com/aosm/DiskArbitration/blob/master/diskarbitrationd/DAMain.c)
-[Some investigation of system notification in Chinese](https://juejin.cn/post/6844903837690494989)
-[Communication between our server and client](https://github.com/nevali/opencflite/tree/master/examples/CFMessagePort)
-[Implmentation of registering local and remote port when communication](https://opensource.apple.com/source/CF/CF-1153.18/CFMessagePort.c.auto.html)
-
-If you checked the last but the most important one, you will find `bootstrap_look_up2` and `bootstrap_register2` and `task_get_bootstrap_port` which will bring you to the concrete XNU's implementation which differs a lot from unix.
-
-Then is runloop.
-Runloop is something highly investigated by now. If you are still strange with it, check this [official doc](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) and [source code of __CFRunLoopRun](https://opensource.apple.com/source/CF/CF-1153.18/CFRunLoop.c.auto.html)
-
 - UIKit && IGListKit && YYText && SDWebImageView && Lottie && CoreAnimation/Graphcis [junior]
 
 Actually, most iOS developer call themselves UIKit caller. Just kidding.. But it does reflect the relationship between UIKit and development of iOS. UIKit builds every app's entire world. Each app has a UIWindow as the key window. Then we have to set up a root UIViewController of this key window. Then commonly we put a UITableView or UICollectionView in the root viewcontroler. Each row of the tableview or collectionview has some UIImageView and UIButton and UILabel and UITextView. Some of imageviews are set up with UIGestureRecognizers, then they can interact with users to respond to specific gestures. A simple but complete app is built done.
@@ -531,17 +498,112 @@ CoreAnimation provides CALayer which represent a minimum unit to render. Try reg
     - CAGradientLayer: designed to achieve gradient color effect.
     - CATiledLayer: commonly used in optimizing big picture rendering like `微博长图`.
 
+- CoreFoundation [senior]
+
+CoreFoundation and Foundation perform as the foundation of the entrie iOS system. CF performs following roles:
+
+    - Data structures provider. It provides like CFArray, CFDictionary, CFTree if you are programming in C.
+    - Practical utils provider. It provides CFLocale, CFXMLParser, CFDate...
+    - IPC Wrapper. Use CFMessagePort or CFMachPort to communicate with other processes.
+    - Low-level Network provider. You can use CFSocket to do socket level networking requests.
+    - Runloop provider. CFRunloop is the key role in any applications in XNU.
+
+Check CoreFoundation's headers if you wish.
+
+CoreFoundation is wholely open-sourced by apple. See it [here](https://opensource.apple.com/source/CF/)
+
+There are 2 classes I want to explain here:
+
+    - CFMachPort
+    - CFRunloop
+which are considered the most special classes provided by XNU.
+
+CFMachPort is used to communicate with other process. One process sends a message to another process. Message is sended and received by 2 mach ports, one in the sender process, another in receiver process. Almost every system framework relies on IPC to work with others. Even our app relies on IPC to achieve goals like rendering something, handling user interaction, handling networking notifications and so on. But almost all these IPC behaviors are covered by system framework. You can see nothing in the opaque UIKit about IPC or NSURLSession in Foundation.
+
+Check more details in these links:
+[hurdextras](http://hurdextras.nongnu.org/ipc_guide/)
+[A demo of register disk mount/unmount notification from system by mach port](https://github.com/aosm/DiskArbitration/blob/master/diskarbitrationd/DAMain.c)
+[Some investigation of system notification in Chinese](https://juejin.cn/post/6844903837690494989)
+[Communication between our server and client](https://github.com/nevali/opencflite/tree/master/examples/CFMessagePort)
+[Implmentation of registering local and remote port when communication](https://opensource.apple.com/source/CF/CF-1153.18/CFMessagePort.c.auto.html)
+
+If you checked the last but the most important one, you will find `bootstrap_look_up2` and `bootstrap_register2` and `task_get_bootstrap_port` which will bring you to the concrete XNU's implementation which differs a lot from unix.
+
+Then is runloop.
+Runloop is something highly investigated by now. If you are still strange with it, check this [official doc](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW1) and [source code of __CFRunLoopRun](https://opensource.apple.com/source/CF/CF-1153.18/CFRunLoop.c.auto.html)
+
+### Non-UI related
+
+#### **Multi Thread**
+- GCD/NSOperationQueue
+GCD provides:
+- Parallel task execution and synchronization (Queues and Tasks)
+- Thread Scheduling (QOS)
+- System Event Monitoring and Time
+
+The first 2 abilities are well known by most apple developers. `dispatch_async` and `dispatch_sync` are widely used in every application in Apple ecosystem.
+
+The concepts of queue and tasks have been well explained by Apple's archived docs – [Concurrency Programming Guide](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html)
+
+You must become familiar with async, sync, barrier, group, and queues before any real development in iOS.
+
+But for the third one, System Event Monitoring and Time, are rarely used, but very powerful when you are fixing specific problems like:
+
+- Timer
+- Unix signal
+- File/Socket descriptor
+- Process related events, Mach related events
+- Customized event
+
+Find details in [Dispatch Source](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/GCDWorkQueues/GCDWorkQueues.html#//apple_ref/doc/uid/TP40008091-CH103-SW1)
 
 
-- AFNetworking 
+
+#### **Networking**
+
+##### AFNetworking
 
 AFNetworking saves our time to write template codes like requesting an image for a UIImageView, UIButton, or binding UIActivityIndicatorView,   UIProgressView and UIRefreshControl with some specific network request. It also provides abilities to:
-    - customize your strategy about server trust certificates. 
-    - reuqest:
-        - simply map random string to be a legal query param (`AFPercentEscapedStringFromString` used by AFQueryStringPair)
-        - automatically set `User-Agent` and `Accept-Language`
-        - simply create multipart request with automatically set `Content-Type` and `Content-Length`
+- customize your strategy about server trust certificates.
+- reuqest:
+    - simply map random string to be a legal query param (`AFPercentEscapedStringFromString` used by AFQueryStringPair)
+    - automatically set `User-Agent` and `Accept-Language`
+    - simply create multipart request with automatically set `Content-Type` and `Content-Length`
 
 As for response, IMO AFNetworking doesn't work as well as we wish. First weakness is lacking of response modeling, AFNetworking just returns a raw NSDictionary if you are using JSONSerializer. AF does not provide a default modeling way to make the most convinience for users. Besides, AF doesn't support protobuf originally, but pb is almostly used by every application nowadays.
 
+#### **Mobile Data Cache**
+
+##### WCDB/FMDB(SQLite)/MMKV
+
+##### CoreData
+
+##### Keychain
+
+#### **File Management**
+##### NSFileManager/NSStream
+
+#### **Serialization**
+##### JSONModel/Swift Codable/YYJSON
+
+##### Protobuf
+
+#### **Model**
+##### Remodel
+
+#### **Model Consistency**
+##### ConsistencyManager
+
+#### **Regex**
+##### Regex
+
+
+#### **Router**
+##### Deeplink/Router (no specific framework)
+
+#### **Functional Programming**
+##### RxSwift/RAC
+
+#### **Logging**
+...
 
