@@ -92,8 +92,6 @@ Feel free to add PR or issues.
 <li>Regex
 <li>Keychain
 <li>Deeplink/Router (no specific framework)
-<li>PromiseKit (usefulless IMO)
-<li>Xlog
 </li> 
 </ul>
 <li>API related 
