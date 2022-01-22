@@ -479,7 +479,7 @@ Then let's talk about rendering images. Basically, UIImageView is the only one r
 
 [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG) or PDF are designed to provide an interactive zoom-in/out experience with high-fidelity based on vector graphics. SVG is based on XML which means a big SVG still can be compressed smaller in binary format. And you can search, edit the content with raw text editor or drawing software. I won't describe the advantages and disadvantages of vector based format compared to bitmap based format, try to search and learn by yourself.
 
-In addition, on a whim of investigating the implementation of SDWebImageSVGDecoder, I found SDWebImage tries a shortcut instead of implementing a concrete decoder on iOS platform. It uses CoreSVG framework which is still in beta and protected by Apple. It reverse the CoreSVG framework, get the interface of the key functions, use `dlsym` open these functions runtime. For a traditional way to implement SVG decoder and renderer in iOS platorm, we can use libXML to parse the SVG file's data, use CoreGraphics to render all the bezier path defined by the data. [SwiftSVG](https://github.com/mchoe/SwiftSVG) provides a traditional way to achieve.
+In addition, on a whim of investigating the implementation of SDWebImageSVGDecoder, I found SDWebImage tries a shortcut instead of implementing a concrete decoder on iOS platform. It uses CoreSVG framework which is still in beta and protected by Apple. It reverses the CoreSVG framework, gets the interface of the key functions, and uses `dlsym` to open these functions at runtime. To implement SVG decoder and renderer in iOS platorm, we can use libXML to parse the SVG file's data, use CoreGraphics to render all the bezier path defined by the data. [SwiftSVG](https://github.com/mchoe/SwiftSVG) provides a traditional way to achieve.
 
 For PDF files, use UIGraphicsPDFRender to render a PDF file.
 
@@ -543,7 +543,7 @@ The first 2 abilities are well known by most apple developers. `dispatch_async` 
 
 The concepts of queue and tasks have been well explained by Apple's archived docs – [Concurrency Programming Guide](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html)
 
-You must become familiar with async, sync, barrier, group, and queues before any real development in iOS.
+You must become familiar with `queue`, `async`, `sync`, `barrier`, `group` and `semaphore` before any real development in iOS.
 
 But for the third one, System Event Monitoring and Time, are rarely used, but very powerful when you are fixing specific problems like:
 
@@ -554,6 +554,8 @@ But for the third one, System Event Monitoring and Time, are rarely used, but ve
 - Customized event
 
 Find details in [Dispatch Source](https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/GCDWorkQueues/GCDWorkQueues.html#//apple_ref/doc/uid/TP40008091-CH103-SW1)
+
+If you feel a little bit hard to understand these APIs without examples, you can check an [apportableFoundation](https://github.com/apportable/Foundation/blob/master/System/Foundation/) who implements Foundation.framework's API with CoreFoundation and GCD. And CoreFoundation uses GCD too. For example, if you are looking for dispatch_io related examples, check NSFileManager's implmentation in this repo; if you are looking for dispatch_source mach port related examples, check CFMessagePort/CFMachPort's impl. Also, GCD actually works tightly with CFRunloop to perform runloop-based behaviors like dipatch task to main queue which is also the main runloop.
 
 
 
